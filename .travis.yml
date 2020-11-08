@@ -1,0 +1,23 @@
+language: generic
+sudo: required
+services:
+    - docker
+
+before_install:
+    - docker build -t beercake/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+    - docker run -e CI=true beercake/react-test npm test
+
+after_success:
+    - docker build -t beercake/multi-client ./client
+    - docker build -t beercake/multi-nginx ./nginx
+    - docker build -t beercake/multi-server ./server
+    - docker build -t beercake/multi-worker ./worker
+    # Log in to the docker CLI
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+    # Take these images and push them to docker hub
+    - docker push beercake/multi-client
+    - docker push beercake/multi-nginx
+    - docker push beercake/multi-server
+    - docker push beercake/multi-worker
