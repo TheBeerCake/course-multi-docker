@@ -12,10 +12,10 @@
             "name": "nginx",
             "image": "beercake/multi-nginx",
             "essential": true,
-            "portMappings": {
+            "portMappings": [{
                 "hostPort": 80,
                 "containerPort": 80
-            },
+            }],
             "links": ["client", "server"],
             "memory": 128
         },
